@@ -1,6 +1,7 @@
 class Game {
     field int state; // 0=Menu, 1=Play, 2=Credits, 3=Instructions, 4=Leaderboard
     field int seed;  // To create psuedo-randomness for every run of the game
+    field Player player;
 
     constructor Game new() {
         let state = 0;
@@ -122,12 +123,28 @@ class Game {
 
     /** 4: Game logic */
     method void runGame() {
+        var char key;
+        var boolean exitGame;
+        
+        let exitGame = false;
         do Screen.clearScreen();
-        do Output.printString("Game Started! Seed: ");
-        do Output.printInt(seed);
-        // Currently nothing
-        do Sys.wait(2000);
-        let state = 0; // Temporary: go back to menu after 2 seconds
+        
+        let player = Player.new(0, 120, 16);
+
+        while (~exitGame) {
+            let key = Keyboard.keyPressed();
+            
+            if (key = 130) { do player.moveLeft(); }
+            if (key = 131) { do player.moveUp(); }
+            if (key = 132) { do player.moveRight(); }
+            if (key = 133) { do player.moveDown(); }
+            if (key = 140) { let exitGame = true; } // ESC key to exit
+
+            do Sys.wait(5); // Wait 5ms. To control game speed.
+        }
+
+        do player.dispose();
+        let state = 0;
         return;
     }
 

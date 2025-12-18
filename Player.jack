@@ -1,0 +1,74 @@
+class Player {
+    field int x, y; // Top-left corner of the player
+    field int size; // Size of the player
+
+    /** Creates a new player at the given location. */
+    constructor Player new(int startX, int startY, int playerSize) {
+        let x = startX;
+        let y = startY;
+        let size = playerSize;
+        do draw();
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Draws the player using the Sprites class. */
+    method void draw() {
+        do Sprites.drawPlayer(x, y);
+        return;
+    }
+
+    /** Erases the player (prepares for movement). */
+    method void erase() {
+        do Screen.setColor(false);
+        do Screen.drawRectangle(x, y, x + size, y + size);
+        return;
+    }
+
+    /** Movement Methods with Boundary Checks */
+    
+    method void moveUp() {
+        if (y > 1) {
+            do erase();
+            let y = y - 2;
+            do draw();
+        }
+        return;
+    }
+
+    method void moveDown() {
+        if ((y + size) < 254) {
+            do erase();
+            let y = y + 2;
+            do draw();
+        }
+        return;
+    }
+
+    method void moveLeft() {
+        if (x > 1) {
+            do erase();
+            let x = x - 2;
+            do draw();
+        }
+        return;
+    }
+
+    method void moveRight() {
+        if ((x + size) < 510) {
+            do erase();
+            let x = x + 2;
+            do draw();
+        }
+        return;
+    }
+
+    // Getters for collision detection
+    method int getX() { return x; }
+    method int getY() { return y; }
+    method int getSize() { return size; }
+}
