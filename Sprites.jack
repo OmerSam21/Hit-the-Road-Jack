@@ -5,4 +5,22 @@ class Sprites {
         do Screen.drawRectangle(x, y, x + 16, y + 16);
         return;
     }
+
+    /** Draws a car with clipping logic */
+    function void drawCar(int x, int y, int w, int h, boolean color) {
+        var int y1, y2;
+        let y1 = y;
+        let y2 = y + h;
+
+        // Clipping logic
+        if (y < 0) { let y1 = 0; }
+        if (y2 > 255) { let y2 = 255; }
+
+        // Draw only if the car is actually visible (y1 must be above y2)
+        if (y1 < y2) {
+            do Screen.setColor(color);
+            do Screen.drawRectangle(x, y1, x + w, y2);
+        }
+        return;
+    }
 }

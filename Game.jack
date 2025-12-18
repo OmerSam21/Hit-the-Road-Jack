@@ -2,6 +2,7 @@ class Game {
     field int state; // 0=Menu, 1=Play, 2=Credits, 3=Instructions, 4=Leaderboard
     field int seed;  // To create psuedo-randomness for every run of the game
     field Player player;
+    field Traffic traffic;
 
     constructor Game new() {
         let state = 0;
@@ -130,6 +131,7 @@ class Game {
         do Screen.clearScreen();
         
         let player = Player.new(0, 120, 16);
+        let traffic = Traffic.new();
 
         while (~exitGame) {
             let key = Keyboard.keyPressed();
@@ -139,12 +141,15 @@ class Game {
             if (key = 133) { do player.moveDown(); }
             if (key = 140) { let exitGame = true; } // ESC key to exit
 
-            if (~(key = 0)) {
-                do Sys.wait(150);
-            }
+            if (~(key = 0)) { do Sys.wait(150); }
+            
+            do traffic.moveTraffic();
+            do Sys.wait(20);
+
         }
 
         do player.dispose();
+        do traffic.dispose();
         let state = 0;
         return;
     }

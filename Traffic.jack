@@ -1,0 +1,49 @@
+class Traffic {
+    field Array cars;
+    field int carCount;
+
+    constructor Traffic new() {
+        let carCount = 3;
+        let cars = Array.new(carCount);
+
+        // Currently hardcoded lanes for testing
+        // Lane 1 (X=100), Start Y=0,   Size 20x30, Speed 2, Down (1)
+        let cars[0] = Car.new(100, 0, 20, 30, 2, 1);
+        
+        // Lane 2 (X=200), Start Y=200, Size 20x30, Speed 3, Up (-1)
+        let cars[1] = Car.new(200, 200, 20, 30, 3, -1);
+        
+        // Lane 3 (X=300), Start Y=50,  Size 20x30, Speed 4, Down (1)
+        let cars[2] = Car.new(300, 50, 20, 30, 4, 1);
+        
+        return this;
+    }
+
+    method void dispose() {
+        var int i;
+        var Car c;
+        let i = 0;
+        while (i < carCount) {
+            let c = cars[i];
+            do c.dispose();
+            let i = i + 1;
+        }
+        do cars.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Moves all cars in the fleet */
+    method void moveTraffic() {
+        var int i;
+        var Car c;
+        let i = 0;
+        
+        while (i < carCount) {
+            let c = cars[i];
+            do c.move();
+            let i = i + 1;
+        }
+        return;
+    }
+}

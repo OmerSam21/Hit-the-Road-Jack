@@ -1,0 +1,59 @@
+class Car {
+    field int x; // The horizontal lane position
+    field int y; // The vertical position (changes)
+    field int width; // How wide the car is2
+    field int height; // How long the car is
+    field int speed; // How fast it moves
+    field int direction; // 1 = Down, -1 = Up
+
+    constructor Car new(int laneX, int startY, int w, int h, int s, int dir) {
+        let x = laneX;
+        let y = startY;
+        let width = w;
+        let height = h;
+        let speed = s;
+        let direction = dir;
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void draw() {
+        do Sprites.drawCar(x, y, width, height, true);
+        return;
+    }
+
+    /** Erases the car before moving */
+    method void erase() {
+        do Sprites.drawCar(x, y, width, height, false);
+        return;
+    }
+
+    /** Updates the car's position */
+    method void move() {
+        do erase();
+
+        // Update Y based on speed and direction
+        let y = y + (speed * direction);
+
+        // Wrap around if out of bounds
+        if ((direction = 1) & (y > 256)) {
+            let y = -height;
+        }
+        if ((direction = -1) & ((y + height) < 0)) {
+            let y = 256;
+        }
+
+        do draw();
+        return;
+    }
+
+    // Getters for Collision (we will use these in Phase 4)
+    method int getX() { return x; }
+    method int getY() { return y; }
+    method int getWidth() { return width; }
+    method int getHeight() { return height; }
+}
