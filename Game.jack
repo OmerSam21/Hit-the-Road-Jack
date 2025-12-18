@@ -1,0 +1,85 @@
+class Game {
+    field int state; // 0=Menu, 1=Play, 2=Credits, 3=Instructions, 4=Leaderboard
+    field int seed;  // To create psuedo-randomness for every run of the game
+
+    constructor Game new() {
+        let state = 0;
+        let seed = 0;
+        return this;
+    }
+
+    /** The Main Loop */
+    method void run() {
+        var boolean exit;
+        let exit = false;
+
+        while (~exit) {
+            if (state = 0) { do runMenu(); }
+            if (state = 1) { do runInstructions(); }
+            if (state = 2) { do runInstructions(); } // Temporary
+            if (state = 3) { do runInstructions(); } // Temporary
+            if (state = 4) { do runGame(); }
+        }
+        return;
+    }
+
+    /** 0: Main Menu Loop */
+    method void runMenu() {
+        var char key;
+        var boolean selected;
+        
+        do Screen.clearScreen();
+        do Output.moveCursor(10, 23);
+        do Output.printString("HIT THE ROAD, JACK");
+        do Output.moveCursor(12, 20);
+        do Output.printString("(P)lay  (I)nfo  (C)redits");
+        
+        let selected = false;
+        while (~selected) {
+            let key = Keyboard.keyPressed();
+            
+            let seed = seed + 1;
+            if (seed = 32767) { let seed = 0; }
+
+            // Handle Menu Keys
+            if (key = 80) { let state = 4; let selected = true; } // P key -> Play
+            if (key = 73) { let state = 1; let selected = true; } // I key -> Instructions
+            if (key = 67) { let state = 2; let selected = true; } // C key -> Credits
+            if (key = 76) { let state = 3; let selected = true; } // L key -> Leaderboard
+        }
+        return;
+    }
+
+    /** 1: Instructions */
+    method void runInstructions() {
+        do Screen.clearScreen();
+        do Output.printString("Goal: Cross the road without getting squashed.");
+        do Output.println();
+        do Output.printString("Controls: Arrows to move.");
+        do Output.println();
+        do Output.printString("Press any key to go back.");
+        
+        do Sys.wait(500); 
+        while (Keyboard.keyPressed() = 0) {}
+        let state = 0; // Go back to menu
+        return;
+    }
+
+    // In future credits and leaderboard will be here
+
+    /** 4: Game logic */
+    method void runGame() {
+        do Screen.clearScreen();
+        do Output.printString("Game Started! Seed: ");
+        do Output.printInt(seed);
+        // Currently nothing
+        do Sys.wait(2000);
+        let state = 0; // Temporary: go back to menu after 2 seconds
+        return;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+}

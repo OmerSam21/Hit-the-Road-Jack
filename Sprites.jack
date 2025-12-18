@@ -1,0 +1,8 @@
+class Sprites {
+    function void drawPlayer(int x, int y) {
+        /** Draws the player at a specific location */
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x + 16, y + 16);
+        return;
+    }
+}

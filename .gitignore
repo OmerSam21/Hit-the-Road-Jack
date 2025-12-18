@@ -1,3 +1,4 @@
+*.vm
 .vscode/
 .idea/
 credentials.json
