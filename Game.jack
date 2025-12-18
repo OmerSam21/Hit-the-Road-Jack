@@ -134,13 +134,14 @@ class Game {
         while (~exitGame) {
             let key = Keyboard.keyPressed();
             
-            if (key = 130) { do player.moveLeft(); }
             if (key = 131) { do player.moveUp(); }
             if (key = 132) { do player.moveRight(); }
             if (key = 133) { do player.moveDown(); }
             if (key = 140) { let exitGame = true; } // ESC key to exit
 
-            do Sys.wait(5); // Wait 5ms. To control game speed.
+            if (~(key = 0)) {
+                do Sys.wait(150);
+            }
         }
 
         do player.dispose();
