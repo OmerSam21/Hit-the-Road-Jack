@@ -46,4 +46,20 @@ class Traffic {
         }
         return;
     }
+
+    /** Checks if any car has hit the player */
+    method boolean checkCollisions(Player p) {
+        var int i;
+        var Car c;
+        let i = 0;
+        
+        while (i < carCount) {
+            let c = cars[i];
+            if (c.checkCollision(p)) {
+                return true;
+            }
+            let i = i + 1;
+        }
+        return false;
+    }
 }

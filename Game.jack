@@ -144,6 +144,12 @@ class Game {
             if (~(key = 0)) { do Sys.wait(150); }
             
             do traffic.moveTraffic();
+            if (traffic.checkCollisions(player)) {
+                do Output.moveCursor(10, 20);
+                do Output.printString("GAME OVER");
+                do Sys.wait(2000);
+                let exitGame = true;
+            }
             do Sys.wait(20);
 
         }

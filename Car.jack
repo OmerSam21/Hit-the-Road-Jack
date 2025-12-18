@@ -51,7 +51,36 @@ class Car {
         return;
     }
 
-    // Getters for Collision (we will use these in Phase 4)
+    /** Returns true if this car is hitting the player */
+    method boolean checkCollision(Player p) {
+        var int pLeft, pRight, pTop, pBottom;
+        var int cLeft, cRight, cTop, cBottom;
+        var boolean collision;
+
+        // Player coordinates
+        let pLeft = p.getX();
+        let pRight = pLeft + p.getSize();
+        let pTop = p.getY();
+        let pBottom = pTop + p.getSize();
+
+        // Car coordinates
+        let cLeft = x;
+        let cRight = x + width;
+        let cTop = y;
+        let cBottom = y + height;
+
+        let collision = true;
+
+        // Check for NO overlap
+        if (pBottom < cTop) { let collision = false; }  // Player is above Car
+        if (pTop > cBottom) { let collision = false; }  // Player is below Car
+        if (pRight < cLeft) { let collision = false; }  // Player is left of Car
+        if (pLeft > cRight) { let collision = false; }  // Player is right of Car
+
+        return collision;
+    }
+
+    // Getters for Collision
     method int getX() { return x; }
     method int getY() { return y; }
     method int getWidth() { return width; }
