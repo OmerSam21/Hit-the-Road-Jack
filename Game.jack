@@ -146,9 +146,9 @@ class Game {
             do Output.moveCursor(1, 7);
             do Output.printInt(score);
 
+            // Movement logic
             let key = Keyboard.keyPressed();
             if ((~okToMove) & key = 0) { let okToMove = true; }
-            
             if ((~(key = 0)) & okToMove) {
                 if (key = 131) { do player.moveUp(); }
                 if (key = 133) { do player.moveDown(); }
@@ -160,9 +160,10 @@ class Game {
 
                 let okToMove = false;
             }
-
+            
+            // Level up logic
             if (player.getX() > 448) { // Past 14 * 32, the 12th lane
-                let score = score + 3;
+                let score = score + 2;
                 let level = level + 1;
                 
                 do traffic.increaseDifficulty();
@@ -175,6 +176,7 @@ class Game {
                 do Sys.wait(500);
             }
             
+            // Car logic (movement and collision)
             do traffic.moveTraffic();
             if (traffic.checkCollisions(player)) {
                 do Output.moveCursor(10, 20);
