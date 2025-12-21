@@ -1,6 +1,7 @@
 class Sprites {
 
     static Array carMem;
+    static Array playerMem;
 
     function void init() {
         let carMem = Array.new(64); // 32 rows * 2 columns
@@ -60,7 +61,7 @@ class Sprites {
         // Row 26
         let carMem[52] = -64;   let carMem[53] = 1023;
         // Row 27
-        let carMem[54] = -1856; let carMem[55] = 799;
+        let carMem[54] = -1856; let carMem[55] = 799;   
         // Row 28
         let carMem[56] = -1856; let carMem[57] = 799;
         // Row 29
@@ -70,6 +71,61 @@ class Sprites {
         // Row 31
         let carMem[62] = 0;     let carMem[63] = 0;
         
+        let playerMem = Array.new(64);
+
+        // Rows 0-7: Empty top
+        let playerMem[0] = 0; let playerMem[1] = 0;
+        let playerMem[2] = 0; let playerMem[3] = 0;
+        let playerMem[4] = 0; let playerMem[5] = 0;
+        let playerMem[6] = 0; let playerMem[7] = 0;
+        let playerMem[8] = 0; let playerMem[9] = 0;
+        let playerMem[10] = 0; let playerMem[11] = 0;
+        let playerMem[12] = 0; let playerMem[13] = 0;
+        let playerMem[14] = 0; let playerMem[15] = 0;
+
+        // Row 8
+        let playerMem[16] = ~32767;  let playerMem[17] = 1;
+        // Row 9
+        let playerMem[18] = 16896;   let playerMem[19] = 66;
+        // Row 10
+        let playerMem[20] = 15616;   let playerMem[21] = 188;
+        // Row 11
+        let playerMem[22] = 256;     let playerMem[23] = 128;
+        // Row 12 (Neck)
+        let playerMem[24] = -512;    let playerMem[25] = 127;
+        // Row 13
+        let playerMem[26] = 4096;    let playerMem[27] = 8;
+        // Row 14
+        let playerMem[28] = 20480;   let playerMem[29] = 10;
+        // Row 15
+        let playerMem[30] = 2048;    let playerMem[31] = 16;
+        // Row 16
+        let playerMem[32] = 10240;   let playerMem[33] = 20;
+        // Row 17 (Content)
+        let playerMem[34] = -14336;  let playerMem[35] = 19;
+        // Row 18
+        let playerMem[36] = 4096;    let playerMem[37] = 8;
+        // Row 19
+        let playerMem[38] = 2048;    let playerMem[39] = 16;
+        // Row 20
+        let playerMem[40] = 1024;    let playerMem[41] = 32;
+        // Row 21
+        let playerMem[42] = 9216;    let playerMem[43] = 36;
+        // Row 22
+        let playerMem[44] = 25088;   let playerMem[45] = 70;
+        // Row 23 (Base)
+        let playerMem[46] = -512;    let playerMem[47] = 127;
+        
+        // Rows 24-31: Empty bottom
+        let playerMem[48] = 0; let playerMem[49] = 0;
+        let playerMem[50] = 0; let playerMem[51] = 0;
+        let playerMem[52] = 0; let playerMem[53] = 0;
+        let playerMem[54] = 0; let playerMem[55] = 0;
+        let playerMem[56] = 0; let playerMem[57] = 0;
+        let playerMem[58] = 0; let playerMem[59] = 0;
+        let playerMem[60] = 0; let playerMem[61] = 0;
+        let playerMem[62] = 0; let playerMem[63] = 0;
+
         return;
     }
 
@@ -90,86 +146,42 @@ class Sprites {
 
     /** Drawing and erasing the player sprite */
     function void drawPlayer(int x, int y, boolean isDraw) {
-        var int memAddress;
+        var int memAddress, i;
+        var int dataLeft, dataRight;
+        var int currentLeft, currentRight;
 
-        /** Erasing using the rectangle method */
-        if (~isDraw) {
-            do Screen.setColor(false);
-            do Screen.drawRectangle(x, y, x + 31, y + 31);
-            return;
+        // Player is always on screen, so no clipping logic needed.
+        let i = 0;
+        
+        while (i < 32) {
+            let memAddress = 16384 + ((y + i) * 32) + (x / 16);
+
+            if (isDraw) {
+                let dataLeft = playerMem[(i * 2)];
+                let dataRight = playerMem[(i * 2) + 1];
+            } else {
+                let dataLeft = 0;
+                let dataRight = 0;
+            }
+
+            // --- 2-BIT EDGE PROTECTION ---
+            
+            // LEFT WORD: Protect bottom 2 bits (Bits 0 and 1)
+            // Mask -4  (binary ...11100) -> Clears sprite's bits 0,1
+            // Mask 3   (binary ...00011) -> Keeps screen's bits 0,1
+            let currentLeft = Memory.peek(memAddress);
+            let dataLeft = (dataLeft & -4) | (currentLeft & 3);
+            do Memory.poke(memAddress, dataLeft);
+
+            // RIGHT WORD: Protect top 2 bits (Bits 14 and 15)
+            // Mask 16383  (binary 0011...1111) -> Clears sprite's bits 14,15
+            // Mask -16384 (binary 1100...0000) -> Keeps screen's bits 14,15
+            let currentRight = Memory.peek(memAddress + 1);
+            let dataRight = (dataRight & 16383) | (currentRight & -16384);
+            do Memory.poke(memAddress + 1, dataRight);
+
+            let i = i + 1;
         }
-
-        // Calculate the memory address for the top-left corner
-        let memAddress = 16384 + (y * 32) + (x / 16);
-
-        // Column 0 (Left Word)
-        do Memory.poke(memAddress, 0);
-        do Memory.poke(memAddress +32, 0);
-        do Memory.poke(memAddress +64, 0);
-        do Memory.poke(memAddress +96, 0);
-        do Memory.poke(memAddress +128, 0);
-        do Memory.poke(memAddress +160, 0);
-        do Memory.poke(memAddress +192, 0);
-        do Memory.poke(memAddress +224, 0);
-        do Memory.poke(memAddress +256, ~32767);
-        do Memory.poke(memAddress +288, 16896);
-        do Memory.poke(memAddress +320, 15616);
-        do Memory.poke(memAddress +352, 256);
-        do Memory.poke(memAddress +384, -512);
-        do Memory.poke(memAddress +416, 4096);
-        do Memory.poke(memAddress +448, 20480);
-        do Memory.poke(memAddress +480, 2048);
-        do Memory.poke(memAddress +512, 10240);
-        do Memory.poke(memAddress +544, -14336);
-        do Memory.poke(memAddress +576, 4096);
-        do Memory.poke(memAddress +608, 2048);
-        do Memory.poke(memAddress +640, 1024);
-        do Memory.poke(memAddress +672, 9216);
-        do Memory.poke(memAddress +704, 25088);
-        do Memory.poke(memAddress +736, -512);
-        do Memory.poke(memAddress +768, 0);
-        do Memory.poke(memAddress +800, 0);
-        do Memory.poke(memAddress +832, 0);
-        do Memory.poke(memAddress +864, 0);
-        do Memory.poke(memAddress +896, 0);
-        do Memory.poke(memAddress +928, 0);
-        do Memory.poke(memAddress +960, 0);
-        do Memory.poke(memAddress +992, 0);
-
-        // Column 1 (Right Word)
-        do Memory.poke(memAddress +1, 0);
-        do Memory.poke(memAddress +33, 0);
-        do Memory.poke(memAddress +65, 0);
-        do Memory.poke(memAddress +97, 0);
-        do Memory.poke(memAddress +129, 0);
-        do Memory.poke(memAddress +161, 0);
-        do Memory.poke(memAddress +193, 0);
-        do Memory.poke(memAddress +225, 0);
-        do Memory.poke(memAddress +257, 1);
-        do Memory.poke(memAddress +289, 66);
-        do Memory.poke(memAddress +321, 188);
-        do Memory.poke(memAddress +353, 128);
-        do Memory.poke(memAddress +385, 127);
-        do Memory.poke(memAddress +417, 8);
-        do Memory.poke(memAddress +449, 10);
-        do Memory.poke(memAddress +481, 16);
-        do Memory.poke(memAddress +513, 20);
-        do Memory.poke(memAddress +545, 19);
-        do Memory.poke(memAddress +577, 8);
-        do Memory.poke(memAddress +609, 16);
-        do Memory.poke(memAddress +641, 32);
-        do Memory.poke(memAddress +673, 36);
-        do Memory.poke(memAddress +705, 70);
-        do Memory.poke(memAddress +737, 127);
-        do Memory.poke(memAddress +769, 0);
-        do Memory.poke(memAddress +801, 0);
-        do Memory.poke(memAddress +833, 0);
-        do Memory.poke(memAddress +865, 0);
-        do Memory.poke(memAddress +897, 0);
-        do Memory.poke(memAddress +929, 0);
-        do Memory.poke(memAddress +961, 0);
-        do Memory.poke(memAddress +993, 0);
-
         return;
     }
 
@@ -177,46 +189,107 @@ class Sprites {
     function void drawCar(int x, int y, boolean isDraw) {
         var int memAddress, i, startRow, endRow, screenRow;
         var int dataLeft, dataRight;
+        var int currentLeft, currentRight;
 
-        // 1. Calculate Clipping Bounds
-        // Default: Draw all 32 rows (0 to 32)
+        // 1. Calculate Clipping Bounds (Same as before)
         let startRow = 0;
         let endRow = 32;
 
-        // If top is off-screen (y < 0), skip the first few rows
-        if (y < 0) {
-            let startRow = -y;
-        }
+        if (y < 0) { let startRow = -y; }
+        if ((y + 32) > 256) { let endRow = 256 - y; }
 
-        // If bottom is off-screen (y + 32 > 256), stop early
-        if ((y + 32) > 256) {
-            let endRow = 256 - y;
-        }
-
-        // 2. The Drawing Loop
-        // We only loop through rows that are actually on screen.
         let i = startRow;
         
         while (i < endRow) {
             let screenRow = y + i;
-            
-            // Calculate exact memory address for this row
             let memAddress = 16384 + (screenRow * 32) + (x / 16);
 
             if (isDraw) {
-                // Fetch data from our pre-loaded array
+                // Fetch the sprite data
                 let dataLeft = carMem[(i * 2)];
                 let dataRight = carMem[(i * 2) + 1];
+
+                // --- EDGE PROTECTION START ---
                 
+                // LEFT EDGE (Bit 0): Check what is currently on the screen
+                let currentLeft = Memory.peek(memAddress);
+                
+                // Logic: Take the Car Data, remove its first bit (& -2), 
+                // and combine it with the Screen's first bit (& 1).
+                // Note: -2 is binary 1111...1110 (Mask to clear bit 0)
+                let dataLeft = (dataLeft & -2) | (currentLeft & 1);
+
+
+                // RIGHT EDGE (Bit 15): Check current screen
+                let currentRight = Memory.peek(memAddress + 1);
+                
+                // Logic: Take Car Data, remove top bit (& 32767),
+                // combine with Screen's top bit (& ~32767).
+                // Note: 32767 is binary 0111...1111 (Mask to clear bit 15)
+                let dataRight = (dataRight & 32767) | (currentRight & ~32767);
+                
+                // --- EDGE PROTECTION END ---
+
                 do Memory.poke(memAddress, dataLeft);
                 do Memory.poke(memAddress + 1, dataRight);
             } else {
-                // Erase (Poke 0)
-                do Memory.poke(memAddress, 0);
-                do Memory.poke(memAddress + 1, 0);
+                // ERASING: We must also be careful not to erase the lines!
+                
+                // Left Word: Erase everything EXCEPT Bit 0
+                let currentLeft = Memory.peek(memAddress);
+                do Memory.poke(memAddress, currentLeft & 1); // Keep only the line
+                
+                // Right Word: Erase everything EXCEPT Bit 15
+                let currentRight = Memory.peek(memAddress + 1);
+                do Memory.poke(memAddress + 1, currentRight & ~32767); // Keep only the line
             }
 
             let i = i + 1;
+        }
+        return;
+    }
+    /** Draws the road markings (Safe Zone borders and Lane dividers) */
+    function void drawRoad() {
+        var int i;
+        var int x;
+
+        do Screen.setColor(true); // Ensure we are drawing in black
+
+        // 1. Draw Safe Zone Borders (Solid Lines)
+        // Left Safe Zone (0 to 63)
+        do Screen.drawLine(63, 0, 63, 255);
+        do Screen.drawLine(62, 0, 62, 255); // Double thickness
+
+        // Right Safe Zone (448 to 511)
+        do Screen.drawLine(448, 0, 448, 255);
+        do Screen.drawLine(449, 0, 449, 255); // Double thickness
+
+        // 2. Draw Lane Separators (Dashed Lines)
+        // Lanes are 32 pixels wide starting at x=64.
+        // Dividers are at: 96, 128, 160...
+        
+        let i = 0;
+        // There are 11 dividers for the 12 lanes
+        while (i < 11) {
+            let x = 96 + (i * 32);
+            do Sprites.drawDashedLine(x);
+            let i = i + 1;
+        }
+        return;
+    }
+
+    /** Helper to draw a dashed vertical line */
+    function void drawDashedLine(int x) {
+        var int y;
+        let y = 10;
+        
+        // FIX: Loop only while y < 245 to prevent drawing off-screen (255)
+        while (y < 245) {
+            // Draw a 10-pixel segment
+            do Screen.drawLine(x, y, x, y + 10);
+            
+            // Skip 20 pixels (Gap)
+            let y = y + 20; 
         }
         return;
     }

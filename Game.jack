@@ -194,6 +194,8 @@ class Game {
         let level = 1;
         do Screen.clearScreen();
 
+        do Sprites.drawRoad();
+
         // Draw HUD 
         do Output.moveCursor(0, 0);
         do Output.printString(s_level_init);
