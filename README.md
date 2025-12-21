@@ -38,7 +38,7 @@ The project consists of the following Jack classes:
 - **Car.jack**: Individual car entity with position, speed, and direction
 - **Sprites.jack**: Handles all drawing operations (player, cars, road, etc.)
 - **Leaderboard.jack**: Manages high score storage and display
-- **MenuAnimation.jack**: Handles animated wave effects on the menu screen
+- **Animation.jack**: Handles animated wave effects on the menu screen
 
 ## How to Run
 

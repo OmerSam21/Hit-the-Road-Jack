@@ -2,6 +2,7 @@ class Main {
     function void main() {
         var Game game;
         do Sprites.init();
+        do Animation.init();
         let game = Game.new();
         do game.run();
         do game.dispose();

@@ -103,7 +103,7 @@ class Game {
         let waveTime = 0;
 
         // Draw the initial static wave
-        do MenuAnimation.drawWave(110, 180, waveTime);
+        do Animation.drawWave(110, 180, waveTime);
 
         while (~selected) {
             let key = Keyboard.keyPressed();
@@ -117,7 +117,7 @@ class Game {
                 let animTimer = 0;
                 let waveTime = waveTime + 1;
                 if (waveTime > 30000) { let waveTime = 0; }
-                do MenuAnimation.drawWave(110, 180, waveTime);
+                do Animation.drawWave(110, 180, waveTime);
             }
 
             // Handle Menu Keys
@@ -233,8 +233,8 @@ class Game {
                 let level = level + 1;
                 
                 do traffic.increaseDifficulty();
+                do Animation.runLevelUp();
 
-                do Sys.wait(500);
                 do player.dispose();
                 let player = Player.new(); 
                 
