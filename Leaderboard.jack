@@ -37,6 +37,9 @@ class Leaderboard {
         }
         do scores.dispose();
         do names.dispose();
+        do s_highscore.dispose();
+        do s_dot_interval.dispose();
+        do s_dash_interval.dispose();
         do Memory.deAlloc(this);
         return;
     }

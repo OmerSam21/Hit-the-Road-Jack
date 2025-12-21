@@ -270,6 +270,26 @@ class Game {
     }
 
     method void dispose() {
+        do s_title.dispose();
+        do s_menu_play.dispose();
+        do s_menu_instr.dispose();
+        do s_menu_cred.dispose();
+        do s_menu_lead.dispose();
+        do s_instr.dispose();
+        do s_goal.dispose();
+        do s_ctrl.dispose();
+        do s_dodge.dispose();
+        do s_aim.dispose();
+        do s_cred.dispose();
+        do s_devs.dispose();
+        do s_proj_name.dispose();
+        do s_back.dispose();
+        do s_level_init.dispose();
+        do s_score_init.dispose();
+        do s_game_over.dispose();
+        do s_final_score.dispose();
+        do s_new_highscore.dispose();
+        do s_enter_name.dispose();
         do Memory.deAlloc(this);
         return;
     }
