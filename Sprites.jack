@@ -150,7 +150,6 @@ class Sprites {
         var int dataLeft, dataRight;
         var int currentLeft, currentRight;
 
-        // Player is always on screen, so no clipping logic needed.
         let i = 0;
         
         while (i < 32) {
@@ -163,19 +162,10 @@ class Sprites {
                 let dataLeft = 0;
                 let dataRight = 0;
             }
-
-            // --- 2-BIT EDGE PROTECTION ---
-            
-            // LEFT WORD: Protect bottom 2 bits (Bits 0 and 1)
-            // Mask -4  (binary ...11100) -> Clears sprite's bits 0,1
-            // Mask 3   (binary ...00011) -> Keeps screen's bits 0,1
+            // Preventing player sprite from overwriting lane seperators
             let currentLeft = Memory.peek(memAddress);
             let dataLeft = (dataLeft & -4) | (currentLeft & 3);
             do Memory.poke(memAddress, dataLeft);
-
-            // RIGHT WORD: Protect top 2 bits (Bits 14 and 15)
-            // Mask 16383  (binary 0011...1111) -> Clears sprite's bits 14,15
-            // Mask -16384 (binary 1100...0000) -> Keeps screen's bits 14,15
             let currentRight = Memory.peek(memAddress + 1);
             let dataRight = (dataRight & 16383) | (currentRight & -16384);
             do Memory.poke(memAddress + 1, dataRight);
@@ -191,7 +181,7 @@ class Sprites {
         var int dataLeft, dataRight;
         var int currentLeft, currentRight;
 
-        // 1. Calculate Clipping Bounds (Same as before)
+        // 1. Calculate Clipping Bounds
         let startRow = 0;
         let endRow = 32;
 
@@ -204,44 +194,21 @@ class Sprites {
             let screenRow = y + i;
             let memAddress = 16384 + (screenRow * 32) + (x / 16);
 
+            // Preventing car sprite from overwriting lane seperators
             if (isDraw) {
-                // Fetch the sprite data
                 let dataLeft = carMem[(i * 2)];
                 let dataRight = carMem[(i * 2) + 1];
-
-                // --- EDGE PROTECTION START ---
-                
-                // LEFT EDGE (Bit 0): Check what is currently on the screen
                 let currentLeft = Memory.peek(memAddress);
-                
-                // Logic: Take the Car Data, remove its first bit (& -2), 
-                // and combine it with the Screen's first bit (& 1).
-                // Note: -2 is binary 1111...1110 (Mask to clear bit 0)
                 let dataLeft = (dataLeft & -2) | (currentLeft & 1);
-
-
-                // RIGHT EDGE (Bit 15): Check current screen
                 let currentRight = Memory.peek(memAddress + 1);
-                
-                // Logic: Take Car Data, remove top bit (& 32767),
-                // combine with Screen's top bit (& ~32767).
-                // Note: 32767 is binary 0111...1111 (Mask to clear bit 15)
                 let dataRight = (dataRight & 32767) | (currentRight & ~32767);
-                
-                // --- EDGE PROTECTION END ---
-
                 do Memory.poke(memAddress, dataLeft);
                 do Memory.poke(memAddress + 1, dataRight);
             } else {
-                // ERASING: We must also be careful not to erase the lines!
-                
-                // Left Word: Erase everything EXCEPT Bit 0
                 let currentLeft = Memory.peek(memAddress);
-                do Memory.poke(memAddress, currentLeft & 1); // Keep only the line
-                
-                // Right Word: Erase everything EXCEPT Bit 15
+                do Memory.poke(memAddress, currentLeft & 1);
                 let currentRight = Memory.peek(memAddress + 1);
-                do Memory.poke(memAddress + 1, currentRight & ~32767); // Keep only the line
+                do Memory.poke(memAddress + 1, currentRight & ~32767);
             }
 
             let i = i + 1;
@@ -253,23 +220,17 @@ class Sprites {
         var int i;
         var int x;
 
-        do Screen.setColor(true); // Ensure we are drawing in black
+        do Screen.setColor(true);
 
-        // 1. Draw Safe Zone Borders (Solid Lines)
-        // Left Safe Zone (0 to 63)
+        // 1. Draw Safe Zone
+        // Left Safe Zone
         do Screen.drawLine(63, 0, 63, 255);
-        do Screen.drawLine(62, 0, 62, 255); // Double thickness
-
-        // Right Safe Zone (448 to 511)
+        do Screen.drawLine(62, 0, 62, 255);
+        // Right Safe Zone
         do Screen.drawLine(448, 0, 448, 255);
-        do Screen.drawLine(449, 0, 449, 255); // Double thickness
+        do Screen.drawLine(449, 0, 449, 255); 
 
-        // 2. Draw Lane Separators (Dashed Lines)
-        // Lanes are 32 pixels wide starting at x=64.
-        // Dividers are at: 96, 128, 160...
-        
         let i = 0;
-        // There are 11 dividers for the 12 lanes
         while (i < 11) {
             let x = 96 + (i * 32);
             do Sprites.drawDashedLine(x);
@@ -283,12 +244,11 @@ class Sprites {
         var int y;
         let y = 10;
         
-        // FIX: Loop only while y < 245 to prevent drawing off-screen (255)
         while (y < 245) {
             // Draw a 10-pixel segment
             do Screen.drawLine(x, y, x, y + 10);
             
-            // Skip 20 pixels (Gap)
+            // Skip 20 pixels
             let y = y + 20; 
         }
         return;
