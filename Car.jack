@@ -52,16 +52,16 @@ class Car {
     }
 
     /** Returns true if this car is hitting the player */
-    method boolean checkCollision(Player p) {
+    method boolean checkCollision(int playerX, int playerY, int playerSize) {
         var int pLeft, pRight, pTop, pBottom;
         var int cLeft, cRight, cTop, cBottom;
         var boolean collision;
 
         // Player coordinates
-        let pLeft = p.getX();
-        let pRight = pLeft + p.getSize();
-        let pTop = p.getY();
-        let pBottom = pTop + p.getSize();
+        let pLeft = playerX;
+        let pRight = playerX + playerSize;
+        let pTop = playerY;
+        let pBottom = playerY + playerSize;
 
         // Car coordinates
         let cLeft = x;
