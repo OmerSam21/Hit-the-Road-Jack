@@ -222,7 +222,7 @@ class Game {
                     do player.moveRight();
                     let score = score + 1;
                 }
-                if (key = 140) { let exitGame = true; } // ESC key to exit
+                if (key = 140) { let exitGame = true; let state = 5; } // ESC key to exit
 
                 let okToMove = false;
             }
@@ -238,7 +238,6 @@ class Game {
                 do player.dispose();
                 let player = Player.new(); 
                 
-                // In future add flash screen
                 do Sys.wait(500);
             }
             
