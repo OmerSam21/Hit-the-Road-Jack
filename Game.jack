@@ -53,8 +53,8 @@ class Game {
         let s_proj_name  = "Nand2Tetris Project 9";
         let s_back  = "Press any key to go back...";
 
-        let s_level_init = "Level: 1";
-        let s_score_init = "Score: 0";
+        let s_level_init = "LVL:1";
+        let s_score_init = "SCR:0";
         let s_game_over = "GAME OVER";
         let s_final_score = "Final Score: ";
         let s_new_highscore = "NEW HIGH SCORE!";
@@ -207,9 +207,9 @@ class Game {
 
         while (~exitGame) {
             // Update HUD 
-            do Output.moveCursor(0, 7);
+            do Output.moveCursor(0, 4);
             do Output.printInt(level);
-            do Output.moveCursor(1, 7);
+            do Output.moveCursor(1, 4);
             do Output.printInt(score);
 
             // Movement logic
