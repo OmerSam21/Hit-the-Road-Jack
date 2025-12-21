@@ -3,12 +3,14 @@ class Game {
     field int seed;  // To create psuedo-randomness for every run of the game
     field Player player;
     field Traffic traffic;
+    field Leaderboard leaderboard;
     field int score;
     field int level;
 
     constructor Game new() {
         let state = 0;
         let seed = 0;
+        let leaderboard = Leaderboard.new();
         let score = 0;
         let level = 1;
         return this;
@@ -109,17 +111,10 @@ class Game {
     /** 3: Leaderboard */
     method void runLeaderboard() {
         do Screen.clearScreen();
-        do Output.moveCursor(0, 0);
-        // Placeholder of fake leaderboard for now
-        do Output.printString("LEADERBOARD (Session):");
-        do Output.println();
-        do Output.println();
-        do Output.printString("1. ALE - 067");
-        do Output.println();
-        do Output.printString("2. OFM - 000");
-        do Output.println();
-        do Output.println();
-        do Output.printString("Press any key to go back...");
+        do leaderboard.show(20, 5);
+        
+        do Output.moveCursor(20, 20);
+        do Output.printString("Press any key to back...");
         
         do Sys.wait(500);
         while (Keyboard.keyPressed() = 0) {}
@@ -193,6 +188,8 @@ class Game {
     }
 
     method void runGameOver() {
+        var String name;
+        
         do Screen.clearScreen();
         do Output.moveCursor(10, 25);
         do Output.printString("GAME OVER");
@@ -200,13 +197,19 @@ class Game {
         do Output.printString("Final Score: ");
         do Output.printInt(score);
         
-        do Output.moveCursor(15, 18);
-        do Output.printString("Press ENTER to return to main screen");
-
-        // Wait for Enter (Key 128)
-        while (~(Keyboard.keyPressed() = 128)) {}
-        // Wait for release
-        while (Keyboard.keyPressed() = 128) {}
+        if (leaderboard.isHighScore(score)) {
+            do Output.moveCursor(14, 15);
+            do Output.printString("NEW HIGH SCORE!");
+            do Output.moveCursor(16, 15);
+            let name = Keyboard.readLine("Enter Name for leaderboard: ");
+            
+            do leaderboard.addScore(score, name);
+        } else {
+            do Output.moveCursor(15, 18);
+            do Output.printString("Press ENTER to try again");
+            while (~(Keyboard.keyPressed() = 128)) {}
+            while (Keyboard.keyPressed() = 128) {}
+        }
 
         let state = 0;
         return;

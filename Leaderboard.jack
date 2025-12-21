@@ -1,0 +1,86 @@
+class Leaderboard {
+    field Array scores;
+    field Array names;
+    field int capacity;
+
+    constructor Leaderboard new() {
+        var int i;
+        let capacity = 5;
+        let scores = Array.new(capacity);
+        let names = Array.new(capacity);
+
+        let names[0] = "AAA"; let scores[0] = 0;
+        let names[1] = "AAA"; let scores[1] = 0;
+        let names[2] = "AAA"; let scores[2] = 0;
+        let names[3] = "AAA"; let scores[3] = 0;
+        let names[4] = "AAA"; let scores[4] = 0;
+
+        return this;
+    }
+
+    method void dispose() {
+        do scores.dispose();
+        do names.dispose();
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Checks if a score qualifies for the Top 5 */
+    method boolean isHighScore(int score) {
+        if (score > scores[capacity - 1]) {
+            return true;
+        }
+        return false;
+    }
+
+    /** Adds a score and sorts the list */
+    method void addScore(int newScore, String newName) {
+        var int i, j;
+        var boolean inserted;
+        
+        let i = 0;
+        let inserted = false;
+
+        // Find the spot to insert
+        while ((i < capacity) & (~inserted)) {
+            if (newScore > scores[i]) {
+                let j = capacity - 1; 
+                while (j > i) {
+                    let scores[j] = scores[j - 1];
+                    let names[j] = names[j - 1];
+                    let j = j - 1;
+                }
+
+                let scores[i] = newScore;
+                let names[i] = newName;                
+                let inserted = true;
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+
+    /** Draws the table to the screen */
+    method void show(int x, int y) {
+        var int i;
+        do Output.moveCursor(y, x);
+        do Output.printString("HIGH SCORES");
+        do Output.println();
+        do Output.println();
+
+        let i = 0;
+        while (i < capacity) {
+            do Output.moveCursor(y + 2 + i, x);
+            do Output.printInt(i + 1);
+            
+            do Output.printString(". ");
+            do Output.printString(names[i]);
+            
+            do Output.printString(" - ");
+            do Output.printInt(scores[i]);
+            
+            let i = i + 1;
+        }
+        return;
+    }
+}
