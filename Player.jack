@@ -5,7 +5,7 @@ class Player {
 
     /** Creates a new player at the given location. */
     constructor Player new() {
-        let x = 38;
+        let x = 32;
         let y = 120;
         let size = 16;
         let jumpSize = 32;
@@ -21,14 +21,13 @@ class Player {
 
     /** Draws the player using the Sprites class. */
     method void draw() {
-        do Sprites.drawPlayer(x, y);
+        do Sprites.drawPlayer(x, y, true);
         return;
     }
 
     /** Erases the player (prepares for movement). */
     method void erase() {
-        do Screen.setColor(false);
-        do Screen.drawRectangle(x, y, x + size, y + size);
+        do Sprites.drawPlayer(x, y, false);
         return;
     }
 

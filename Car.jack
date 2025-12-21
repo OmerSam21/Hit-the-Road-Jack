@@ -22,13 +22,13 @@ class Car {
     }
 
     method void draw() {
-        do Sprites.drawCar(x, y, width, height, true);
+        do Sprites.drawCar(x, y, true);
         return;
     }
 
     /** Erases the car before moving */
     method void erase() {
-        do Sprites.drawCar(x, y, width, height, false);
+        do Sprites.drawCar(x, y, false);
         return;
     }
 
@@ -40,11 +40,11 @@ class Car {
         let y = y + (speed * direction);
 
         // Wrap around if out of bounds
-        if ((direction = 1) & (y > 256)) {
-            let y = -height;
+        if ((direction = 1) & (y > 224)) {
+            let y = 0;
         }
-        if ((direction = -1) & ((y + height) < 0)) {
-            let y = 256;
+        if ((direction = -1) & (y < 0)) {
+            let y = 224;
         }
 
         do draw();
@@ -56,17 +56,20 @@ class Car {
         var int pLeft, pRight, pTop, pBottom;
         var int cLeft, cRight, cTop, cBottom;
         var boolean collision;
+        var int padding;
+
+        let padding = 8;
 
         // Player coordinates
         let pLeft = playerX;
         let pRight = playerX + playerSize;
-        let pTop = playerY;
-        let pBottom = playerY + playerSize;
+        let pTop = playerY + padding;
+        let pBottom = playerY + playerSize + padding;
 
         // Car coordinates
         let cLeft = x;
         let cRight = x + width;
-        let cTop = y;
+        let cTop = y + 2;
         let cBottom = y + height;
 
         let collision = true;

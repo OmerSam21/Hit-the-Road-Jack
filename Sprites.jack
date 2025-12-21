@@ -1,26 +1,171 @@
 class Sprites {
-    /** Draws the player at a specific location */
-    function void drawPlayer(int x, int y) {
-        do Screen.setColor(true);
-        do Screen.drawRectangle(x, y, x + 16, y + 16);
+
+    /** Drawing and erasing the player sprite */
+    function void drawPlayer(int x, int y, boolean isDraw) {
+        var int memAddress;
+
+        /** Erasing using the rectangle method */
+        if (~isDraw) {
+            do Screen.setColor(false);
+            do Screen.drawRectangle(x, y, x + 31, y + 31);
+            return;
+        }
+
+        // Calculate the memory address for the top-left corner
+        let memAddress = 16384 + (y * 32) + (x / 16);
+
+        // Column 0 (Left Word)
+        do Memory.poke(memAddress, 0);
+        do Memory.poke(memAddress +32, 0);
+        do Memory.poke(memAddress +64, 0);
+        do Memory.poke(memAddress +96, 0);
+        do Memory.poke(memAddress +128, 0);
+        do Memory.poke(memAddress +160, 0);
+        do Memory.poke(memAddress +192, 0);
+        do Memory.poke(memAddress +224, 0);
+        do Memory.poke(memAddress +256, ~32767);
+        do Memory.poke(memAddress +288, 16896);
+        do Memory.poke(memAddress +320, 15616);
+        do Memory.poke(memAddress +352, 256);
+        do Memory.poke(memAddress +384, -512);
+        do Memory.poke(memAddress +416, 4096);
+        do Memory.poke(memAddress +448, 20480);
+        do Memory.poke(memAddress +480, 2048);
+        do Memory.poke(memAddress +512, 10240);
+        do Memory.poke(memAddress +544, -14336);
+        do Memory.poke(memAddress +576, 4096);
+        do Memory.poke(memAddress +608, 2048);
+        do Memory.poke(memAddress +640, 1024);
+        do Memory.poke(memAddress +672, 9216);
+        do Memory.poke(memAddress +704, 25088);
+        do Memory.poke(memAddress +736, -512);
+        do Memory.poke(memAddress +768, 0);
+        do Memory.poke(memAddress +800, 0);
+        do Memory.poke(memAddress +832, 0);
+        do Memory.poke(memAddress +864, 0);
+        do Memory.poke(memAddress +896, 0);
+        do Memory.poke(memAddress +928, 0);
+        do Memory.poke(memAddress +960, 0);
+        do Memory.poke(memAddress +992, 0);
+
+        // Column 1 (Right Word)
+        do Memory.poke(memAddress +1, 0);
+        do Memory.poke(memAddress +33, 0);
+        do Memory.poke(memAddress +65, 0);
+        do Memory.poke(memAddress +97, 0);
+        do Memory.poke(memAddress +129, 0);
+        do Memory.poke(memAddress +161, 0);
+        do Memory.poke(memAddress +193, 0);
+        do Memory.poke(memAddress +225, 0);
+        do Memory.poke(memAddress +257, 1);
+        do Memory.poke(memAddress +289, 66);
+        do Memory.poke(memAddress +321, 188);
+        do Memory.poke(memAddress +353, 128);
+        do Memory.poke(memAddress +385, 127);
+        do Memory.poke(memAddress +417, 8);
+        do Memory.poke(memAddress +449, 10);
+        do Memory.poke(memAddress +481, 16);
+        do Memory.poke(memAddress +513, 20);
+        do Memory.poke(memAddress +545, 19);
+        do Memory.poke(memAddress +577, 8);
+        do Memory.poke(memAddress +609, 16);
+        do Memory.poke(memAddress +641, 32);
+        do Memory.poke(memAddress +673, 36);
+        do Memory.poke(memAddress +705, 70);
+        do Memory.poke(memAddress +737, 127);
+        do Memory.poke(memAddress +769, 0);
+        do Memory.poke(memAddress +801, 0);
+        do Memory.poke(memAddress +833, 0);
+        do Memory.poke(memAddress +865, 0);
+        do Memory.poke(memAddress +897, 0);
+        do Memory.poke(memAddress +929, 0);
+        do Memory.poke(memAddress +961, 0);
+        do Memory.poke(memAddress +993, 0);
+
         return;
     }
 
-    /** Draws a car with clipping logic */
-    function void drawCar(int x, int y, int w, int h, boolean color) {
-        var int y1, y2;
-        let y1 = y;
-        let y2 = y + h;
+    function void drawCar(int x, int y, boolean isDraw) {
+        var int memAddress;
 
-        // Clipping logic
-        if (y < 0) { let y1 = 0; }
-        if (y2 > 255) { let y2 = 255; }
-
-        // Draw only if the car is actually visible (y1 must be above y2)
-        if (y1 < y2) {
-            do Screen.setColor(color);
-            do Screen.drawRectangle(x, y1, x + w, y2);
+        /** Erasing using the rectangle method */
+        if (~isDraw) {
+            do Screen.setColor(false);
+            do Screen.drawRectangle(x, y, x + 31, y + 31);
+            return;
         }
+
+        // Calculate memory address
+        let memAddress = 16384 + (y * 32) + (x / 16);
+        
+        // column 0
+        do Memory.poke(memAddress, 0);
+        do Memory.poke(memAddress +32, -256);
+        do Memory.poke(memAddress +64, -1920);
+        do Memory.poke(memAddress +96, -1856);
+        do Memory.poke(memAddress +128, -1856);
+        do Memory.poke(memAddress +160, -64);
+        do Memory.poke(memAddress +192, -64);
+        do Memory.poke(memAddress +224, 192);
+        do Memory.poke(memAddress +256, 320);
+        do Memory.poke(memAddress +288, 576);
+        do Memory.poke(memAddress +320, 1088);
+        do Memory.poke(memAddress +352, -1984);
+        do Memory.poke(memAddress +384, -1984);
+        do Memory.poke(memAddress +416, -4032);
+        do Memory.poke(memAddress +448, -4032);
+        do Memory.poke(memAddress +480, -64);
+        do Memory.poke(memAddress +512, -4032);
+        do Memory.poke(memAddress +544, -4032);
+        do Memory.poke(memAddress +576, -1984);
+        do Memory.poke(memAddress +608, -1984);
+        do Memory.poke(memAddress +640, 1088);
+        do Memory.poke(memAddress +672, 576);
+        do Memory.poke(memAddress +704, 320);
+        do Memory.poke(memAddress +736, 192);
+        do Memory.poke(memAddress +768, -64);
+        do Memory.poke(memAddress +800, -64);
+        do Memory.poke(memAddress +832, -64);
+        do Memory.poke(memAddress +864, -1856);
+        do Memory.poke(memAddress +896, -1856);
+        do Memory.poke(memAddress +928, -1920);
+        do Memory.poke(memAddress +960, -256);
+        do Memory.poke(memAddress +992, 0);
+
+        // column 1
+        do Memory.poke(memAddress +1, 0);
+        do Memory.poke(memAddress +33, 255);
+        do Memory.poke(memAddress +65, 287);
+        do Memory.poke(memAddress +97, 799);
+        do Memory.poke(memAddress +129, 799);
+        do Memory.poke(memAddress +161, 1023);
+        do Memory.poke(memAddress +193, 1023);
+        do Memory.poke(memAddress +225, 768);
+        do Memory.poke(memAddress +257, 640);
+        do Memory.poke(memAddress +289, 576);
+        do Memory.poke(memAddress +321, 544);
+        do Memory.poke(memAddress +353, 543);
+        do Memory.poke(memAddress +385, 543);
+        do Memory.poke(memAddress +417, 527);
+        do Memory.poke(memAddress +449, 527);
+        do Memory.poke(memAddress +481, 1023);
+        do Memory.poke(memAddress +513, 527);
+        do Memory.poke(memAddress +545, 527);
+        do Memory.poke(memAddress +577, 543);
+        do Memory.poke(memAddress +609, 543);
+        do Memory.poke(memAddress +641, 544);
+        do Memory.poke(memAddress +673, 576);
+        do Memory.poke(memAddress +705, 640);
+        do Memory.poke(memAddress +737, 768);
+        do Memory.poke(memAddress +769, 1023);
+        do Memory.poke(memAddress +801, 1023);
+        do Memory.poke(memAddress +833, 1023);
+        do Memory.poke(memAddress +865, 799);
+        do Memory.poke(memAddress +897, 799);
+        do Memory.poke(memAddress +929, 287);
+        do Memory.poke(memAddress +961, 255);
+        do Memory.poke(memAddress +993, 0);
+        
         return;
     }
 }
