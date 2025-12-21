@@ -130,7 +130,7 @@ class Game {
         let exitGame = false;
         do Screen.clearScreen();
         
-        let player = Player.new(0, 120, 16);
+        let player = Player.new();
         let traffic = Traffic.new();
 
         while (~exitGame) {
