@@ -166,6 +166,7 @@ class Game {
                 
                 do traffic.increaseDifficulty();
 
+                do Sys.wait(500);
                 do player.dispose();
                 let player = Player.new(); 
                 
@@ -177,6 +178,9 @@ class Game {
             
             do traffic.moveTraffic();
             if (traffic.checkCollisions(player)) {
+                do Output.moveCursor(10, 20);
+                do Output.printString("GAME OVER");
+                do Sys.wait(2000);
                 let exitGame = true;
                 let state = 5;
             }
