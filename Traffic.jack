@@ -62,19 +62,22 @@ class Traffic {
 
     /** Checks if any car has hit the player */
     method boolean checkCollisions(Player p) {
-        var int i, playerX, playerY, playerSize;
+        var int i, playerX, playerY, playerSize, col, laneIndex;
         var Car c;
         let i = 0;
         let playerX = p.getX();
         let playerY = p.getY();
         let playerSize = p.getSize();
-        
-        while (i < carCount) {
-            let c = cars[i];
+    
+        let col = playerX / 32;
+        let laneIndex = col - 2;
+
+        // Check collision only with a the car that that the player is currently in
+        if ((laneIndex > -1) & (laneIndex < carCount)) {
+            let c = cars[laneIndex];
             if (c.checkCollision(playerX, playerY, playerSize)) {
-                return true;
+                return true; 
             }
-            let i = i + 1;
         }
         return false;
     }
