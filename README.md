@@ -17,7 +17,7 @@ Hit-the-Road-Jack is an arcade-style game where you play as a character trying t
 - **Animated Menu**: Wave animation on the main menu
 - **Collision Detection**: Real-time collision checking between player and traffic
 - **HUD Display**: Shows current level and score during gameplay
-- **Pseudo-Randomness**: Integrated pseudo-randomness to make each run of the game feel new
+- **Pseudo-Randomness**: Integrated pseudo-randomness to make each run of the game different
 
 ## Controls
 
@@ -38,7 +38,7 @@ The project consists of the following Jack classes:
 - **Car.jack**: Individual car entity with position, speed, and direction
 - **Sprites.jack**: Handles all drawing operations (player, cars, road, etc.)
 - **Leaderboard.jack**: Manages high score storage and display
-- **Animation.jack**: Handles animated wave effects on the menu screen
+- **Animation.jack**: Handles animated wave and level-up effects
 
 ## How to Run
 
