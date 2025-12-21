@@ -5,7 +5,7 @@ class Animation {
 
     function void init() {
         let s_lvl_up = "LEVEL UP!";
-        let s_lvl_up_score = "Score +3";
+        let s_lvl_up_score = "Score  +3";
         return;
     }
     function void drawFrame(int x, int y, int frame) {
@@ -59,7 +59,7 @@ class Animation {
         // Flash the Text
         let i = 0;
         while (i < 4) {
-            do Output.moveCursor(10, 27); 
+            do Output.moveCursor(10, 28); 
             do Output.printString(s_lvl_up);
             
             do Output.moveCursor(12, 28); 

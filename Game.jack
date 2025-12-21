@@ -44,7 +44,7 @@ class Game {
         
         let s_instr = "INSTRUCTIONS:";
         let s_goal  = "Goal: Cross the road without getting squashed.";
-        let s_ctrl  = "Controls: Use arrows / space to move up, down and forward.";
+        let s_ctrl  = "Controls: Use arrows/spacebar to move up, down and forward.";
         let s_dodge = "Dodge the cars and reach the next Safe Zone.";
         let s_aim = "Aim for the highest score to place on the leaderboards.";
         
@@ -87,15 +87,15 @@ class Game {
         var int waveTime;
         
         do Screen.clearScreen();
-        do Output.moveCursor(10, 20);
+        do Output.moveCursor(8, 22);
         do Output.printString(s_title);
-        do Output.moveCursor(12, 20); 
+        do Output.moveCursor(10, 22); 
         do Output.printString(s_menu_play);
-        do Output.moveCursor(13, 20);
+        do Output.moveCursor(11, 22);
         do Output.printString(s_menu_instr);
-        do Output.moveCursor(14, 20);
+        do Output.moveCursor(12, 22);
         do Output.printString(s_menu_cred);
-        do Output.moveCursor(15, 20);
+        do Output.moveCursor(13, 22);
         do Output.printString(s_menu_lead);
 
         let selected = false;
@@ -274,13 +274,12 @@ class Game {
             do Output.printString(s_new_highscore);
             do Output.moveCursor(16, 15);
             let name = Keyboard.readLine(s_enter_name);
-            
+
             do leaderboard.addScore(score, name);
         } else {
             do Output.moveCursor(15, 18);
             do Output.printString(s_back);
-            while (~(Keyboard.keyPressed() = 128)) {}
-            while (Keyboard.keyPressed() = 128) {}
+            while (Keyboard.keyPressed() = 0) {}
         }
 
         let state = 0;
