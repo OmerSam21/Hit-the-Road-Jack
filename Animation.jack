@@ -5,7 +5,7 @@ class Animation {
 
     function void init() {
         let s_lvl_up = "LEVEL UP!";
-        let s_lvl_up_score = "Score +2";
+        let s_lvl_up_score = "Score +3";
         return;
     }
     function void drawFrame(int x, int y, int frame) {
