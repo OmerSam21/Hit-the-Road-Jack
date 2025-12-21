@@ -40,11 +40,11 @@ class Car {
         let y = y + (speed * direction);
 
         // Wrap around if out of bounds
-        if ((direction = 1) & (y > 224)) {
-            let y = 0;
+        if ((direction = 1) & (y > 256)) {
+            let y = -32;
         }
-        if ((direction = -1) & (y < 0)) {
-            let y = 224;
+        if ((direction = -1) & (y < -32)) {
+            let y = 256;
         }
 
         do draw();

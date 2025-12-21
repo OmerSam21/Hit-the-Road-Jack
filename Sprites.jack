@@ -1,5 +1,93 @@
 class Sprites {
 
+    static Array carMem;
+
+    function void init() {
+        let carMem = Array.new(64); // 32 rows * 2 columns
+
+        // Row 0
+        let carMem[0] = 0;      let carMem[1] = 0;
+        // Row 1
+        let carMem[2] = -256;   let carMem[3] = 255;
+        // Row 2
+        let carMem[4] = -1920;  let carMem[5] = 287;
+        // Row 3
+        let carMem[6] = -1856;  let carMem[7] = 799;
+        // Row 4
+        let carMem[8] = -1856;  let carMem[9] = 799;
+        // Row 5
+        let carMem[10] = -64;   let carMem[11] = 1023;
+        // Row 6
+        let carMem[12] = -64;   let carMem[13] = 1023;
+        // Row 7
+        let carMem[14] = 192;   let carMem[15] = 768;
+        // Row 8
+        let carMem[16] = 320;   let carMem[17] = 640;
+        // Row 9
+        let carMem[18] = 576;   let carMem[19] = 576;
+        // Row 10
+        let carMem[20] = 1088;  let carMem[21] = 544;
+        // Row 11
+        let carMem[22] = -1984; let carMem[23] = 543;
+        // Row 12
+        let carMem[24] = -1984; let carMem[25] = 543;
+        // Row 13
+        let carMem[26] = -4032; let carMem[27] = 527;
+        // Row 14
+        let carMem[28] = -4032; let carMem[29] = 527;
+        // Row 15
+        let carMem[30] = -64;   let carMem[31] = 1023;
+        // Row 16
+        let carMem[32] = -4032; let carMem[33] = 527;
+        // Row 17
+        let carMem[34] = -4032; let carMem[35] = 527;
+        // Row 18
+        let carMem[36] = -1984; let carMem[37] = 543;
+        // Row 19
+        let carMem[38] = -1984; let carMem[39] = 543;
+        // Row 20
+        let carMem[40] = 1088;  let carMem[41] = 544;
+        // Row 21
+        let carMem[42] = 576;   let carMem[43] = 576;
+        // Row 22
+        let carMem[44] = 320;   let carMem[45] = 640;
+        // Row 23
+        let carMem[46] = 192;   let carMem[47] = 768;
+        // Row 24
+        let carMem[48] = -64;   let carMem[49] = 1023;
+        // Row 25
+        let carMem[50] = -64;   let carMem[51] = 1023;
+        // Row 26
+        let carMem[52] = -64;   let carMem[53] = 1023;
+        // Row 27
+        let carMem[54] = -1856; let carMem[55] = 799;
+        // Row 28
+        let carMem[56] = -1856; let carMem[57] = 799;
+        // Row 29
+        let carMem[58] = -1920; let carMem[59] = 287;
+        // Row 30
+        let carMem[60] = -256;  let carMem[61] = 255;
+        // Row 31
+        let carMem[62] = 0;     let carMem[63] = 0;
+        
+        return;
+    }
+
+    function void dispose() {
+        if (~(carMem = 0)) {
+            do carMem.dispose();
+        }
+        return;
+    }
+
+    /** Make sure not to write outside of screen address range */
+    function void pokeSafe(int address, int value) {
+        if ((address > 16383) & (address < 24576)) {
+            do Memory.poke(address, value);
+        }
+        return;
+    }
+
     /** Drawing and erasing the player sprite */
     function void drawPlayer(int x, int y, boolean isDraw) {
         var int memAddress;
@@ -85,87 +173,51 @@ class Sprites {
         return;
     }
 
+    /** Drawing and erasing the car sprite */
     function void drawCar(int x, int y, boolean isDraw) {
-        var int memAddress;
+        var int memAddress, i, startRow, endRow, screenRow;
+        var int dataLeft, dataRight;
 
-        /** Erasing using the rectangle method */
-        if (~isDraw) {
-            do Screen.setColor(false);
-            do Screen.drawRectangle(x, y, x + 31, y + 31);
-            return;
+        // 1. Calculate Clipping Bounds
+        // Default: Draw all 32 rows (0 to 32)
+        let startRow = 0;
+        let endRow = 32;
+
+        // If top is off-screen (y < 0), skip the first few rows
+        if (y < 0) {
+            let startRow = -y;
         }
 
-        // Calculate memory address
-        let memAddress = 16384 + (y * 32) + (x / 16);
-        
-        // column 0
-        do Memory.poke(memAddress, 0);
-        do Memory.poke(memAddress +32, -256);
-        do Memory.poke(memAddress +64, -1920);
-        do Memory.poke(memAddress +96, -1856);
-        do Memory.poke(memAddress +128, -1856);
-        do Memory.poke(memAddress +160, -64);
-        do Memory.poke(memAddress +192, -64);
-        do Memory.poke(memAddress +224, 192);
-        do Memory.poke(memAddress +256, 320);
-        do Memory.poke(memAddress +288, 576);
-        do Memory.poke(memAddress +320, 1088);
-        do Memory.poke(memAddress +352, -1984);
-        do Memory.poke(memAddress +384, -1984);
-        do Memory.poke(memAddress +416, -4032);
-        do Memory.poke(memAddress +448, -4032);
-        do Memory.poke(memAddress +480, -64);
-        do Memory.poke(memAddress +512, -4032);
-        do Memory.poke(memAddress +544, -4032);
-        do Memory.poke(memAddress +576, -1984);
-        do Memory.poke(memAddress +608, -1984);
-        do Memory.poke(memAddress +640, 1088);
-        do Memory.poke(memAddress +672, 576);
-        do Memory.poke(memAddress +704, 320);
-        do Memory.poke(memAddress +736, 192);
-        do Memory.poke(memAddress +768, -64);
-        do Memory.poke(memAddress +800, -64);
-        do Memory.poke(memAddress +832, -64);
-        do Memory.poke(memAddress +864, -1856);
-        do Memory.poke(memAddress +896, -1856);
-        do Memory.poke(memAddress +928, -1920);
-        do Memory.poke(memAddress +960, -256);
-        do Memory.poke(memAddress +992, 0);
+        // If bottom is off-screen (y + 32 > 256), stop early
+        if ((y + 32) > 256) {
+            let endRow = 256 - y;
+        }
 
-        // column 1
-        do Memory.poke(memAddress +1, 0);
-        do Memory.poke(memAddress +33, 255);
-        do Memory.poke(memAddress +65, 287);
-        do Memory.poke(memAddress +97, 799);
-        do Memory.poke(memAddress +129, 799);
-        do Memory.poke(memAddress +161, 1023);
-        do Memory.poke(memAddress +193, 1023);
-        do Memory.poke(memAddress +225, 768);
-        do Memory.poke(memAddress +257, 640);
-        do Memory.poke(memAddress +289, 576);
-        do Memory.poke(memAddress +321, 544);
-        do Memory.poke(memAddress +353, 543);
-        do Memory.poke(memAddress +385, 543);
-        do Memory.poke(memAddress +417, 527);
-        do Memory.poke(memAddress +449, 527);
-        do Memory.poke(memAddress +481, 1023);
-        do Memory.poke(memAddress +513, 527);
-        do Memory.poke(memAddress +545, 527);
-        do Memory.poke(memAddress +577, 543);
-        do Memory.poke(memAddress +609, 543);
-        do Memory.poke(memAddress +641, 544);
-        do Memory.poke(memAddress +673, 576);
-        do Memory.poke(memAddress +705, 640);
-        do Memory.poke(memAddress +737, 768);
-        do Memory.poke(memAddress +769, 1023);
-        do Memory.poke(memAddress +801, 1023);
-        do Memory.poke(memAddress +833, 1023);
-        do Memory.poke(memAddress +865, 799);
-        do Memory.poke(memAddress +897, 799);
-        do Memory.poke(memAddress +929, 287);
-        do Memory.poke(memAddress +961, 255);
-        do Memory.poke(memAddress +993, 0);
+        // 2. The Drawing Loop
+        // We only loop through rows that are actually on screen.
+        let i = startRow;
         
+        while (i < endRow) {
+            let screenRow = y + i;
+            
+            // Calculate exact memory address for this row
+            let memAddress = 16384 + (screenRow * 32) + (x / 16);
+
+            if (isDraw) {
+                // Fetch data from our pre-loaded array
+                let dataLeft = carMem[(i * 2)];
+                let dataRight = carMem[(i * 2) + 1];
+                
+                do Memory.poke(memAddress, dataLeft);
+                do Memory.poke(memAddress + 1, dataRight);
+            } else {
+                // Erase (Poke 0)
+                do Memory.poke(memAddress, 0);
+                do Memory.poke(memAddress + 1, 0);
+            }
+
+            let i = i + 1;
+        }
         return;
     }
 }
