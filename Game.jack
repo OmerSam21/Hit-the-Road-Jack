@@ -83,6 +83,8 @@ class Game {
     method void runMenu() {
         var char key;
         var boolean selected;
+        var int animTimer;
+        var int waveTime;
         
         do Screen.clearScreen();
         do Output.moveCursor(10, 20);
@@ -95,19 +97,34 @@ class Game {
         do Output.printString(s_menu_cred);
         do Output.moveCursor(15, 20);
         do Output.printString(s_menu_lead);
-        
+
         let selected = false;
+        let animTimer = 0;
+        let waveTime = 0;
+
+        // Draw the initial static wave
+        do MenuAnimation.drawWave(110, 180, waveTime);
+
         while (~selected) {
             let key = Keyboard.keyPressed();
-            
             let seed = seed + 1;
             if (seed = 32767) { let seed = 0; }
 
+            let animTimer = animTimer + 1;
+            
+            // Speed of the wave (Adjust > to make it faster/slower)
+            if (animTimer > 10000) {
+                let animTimer = 0;
+                let waveTime = waveTime + 1;
+                if (waveTime > 30000) { let waveTime = 0; }
+                do MenuAnimation.drawWave(110, 180, waveTime);
+            }
+
             // Handle Menu Keys
-            if (key = 49) { let state = 4; let selected = true; } // 1 key -> Play
-            if (key = 50) { let state = 1; let selected = true; } // 2 key -> Instructions
-            if (key = 51) { let state = 2; let selected = true; } // 3 key -> Credits
-            if (key = 52) { let state = 3; let selected = true; } // 4 key -> Leaderboard
+            if (key = 49) { let state = 4; let selected = true; } // 1 key
+            if (key = 50) { let state = 1; let selected = true; } // 2 key
+            if (key = 51) { let state = 2; let selected = true; } // 3 key
+            if (key = 52) { let state = 3; let selected = true; } // 4 key
         }
         return;
     }
