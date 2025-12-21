@@ -68,17 +68,17 @@ class Game {
     /** 1: Instructions */
     method void runInstructions() {
         do Screen.clearScreen();
-        do Output.moveCursor(4, 2);
+        do Output.moveCursor(4, 3);
         do Output.printString("INSTRUCTIONS:");
-        do Output.moveCursor(6, 3);
+        do Output.moveCursor(6, 4);
         do Output.printString("Goal: Cross the road without getting squashed.");
-        do Output.moveCursor(7, 3);
+        do Output.moveCursor(7, 4);
         do Output.printString("Controls: Use Arrow keys to move.");
-        do Output.moveCursor(8, 3);
+        do Output.moveCursor(9, 4);
         do Output.printString("Dodge the cars and reach the next Safe Zone.");
-        do Output.moveCursor(9, 3);
-        do Output.printString("Aim for the highest score.");
-        do Output.moveCursor(11, 3);
+        do Output.moveCursor(10, 4);
+        do Output.printString("Aim for the highest score to place on the leaderboards.");
+        do Output.moveCursor(12, 4);
         do Output.printString("Press any key to go back...");
         
         do Sys.wait(500); 
@@ -90,16 +90,13 @@ class Game {
     /** 2: Credits */
     method void runCredits() {
         do Screen.clearScreen();
-        do Output.moveCursor(0, 0);
-
+        do Output.moveCursor(4, 3);
         do Output.printString("CREDITS:");
-        do Output.println();
-        do Output.println();
+        do Output.moveCursor(6, 4);
         do Output.printString("Created by Omer Samson, Alon Levy and Ofek Marciano");
-        do Output.println();
+        do Output.moveCursor(7, 4);
         do Output.printString("For Nand2Tetris Project 9");
-        do Output.println();
-        do Output.println();
+        do Output.moveCursor(9, 4);
         do Output.printString("Press any key to go back...");
         
         do Sys.wait(500);
@@ -189,7 +186,7 @@ class Game {
 
     method void runGameOver() {
         var String name;
-        
+
         do Screen.clearScreen();
         do Output.moveCursor(10, 25);
         do Output.printString("GAME OVER");
