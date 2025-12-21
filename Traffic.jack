@@ -78,4 +78,18 @@ class Traffic {
         }
         return false;
     }
+
+    /* Increase difficulty by making cars faster*/
+    method void increaseDifficulty() {
+        var int i;
+        var Car c;
+        let i = 0;
+        
+        while (i < carCount) {
+            let c = cars[i];
+            do c.increaseSpeed(1);
+            let i = i + 1;
+        }
+        return;
+    }
 }

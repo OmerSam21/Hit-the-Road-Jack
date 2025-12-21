@@ -1,12 +1,16 @@
 class Game {
-    field int state; // 0=Menu, 1=Play, 2=Credits, 3=Instructions, 4=Leaderboard
+    field int state; // 0=Menu, 1=Play, 2=Credits, 3=Instructions, 4=Leaderboard, 5=GameOver
     field int seed;  // To create psuedo-randomness for every run of the game
     field Player player;
     field Traffic traffic;
+    field int score;
+    field int level;
 
     constructor Game new() {
         let state = 0;
         let seed = 0;
+        let score = 0;
+        let level = 1;
         return this;
     }
 
@@ -21,6 +25,7 @@ class Game {
             if (state = 2) { do runCredits(); }
             if (state = 3) { do runLeaderboard(); }
             if (state = 4) { do runGame(); }
+            if (state = 5) { do runGameOver(); }
         }
         return;
     }
@@ -125,15 +130,29 @@ class Game {
     /** 4: Game logic */
     method void runGame() {
         var char key;
-        var boolean exitGame;
+        var boolean exitGame, levelComplete;
         
         let exitGame = false;
+        let score = 0;
+        let level = 1;
         do Screen.clearScreen();
+
+        // Draw HUD 
+        do Output.moveCursor(0, 0);
+        do Output.printString("Level: 1");
+        do Output.moveCursor(1, 0);
+        do Output.printString("Score: 0");
         
         let player = Player.new();
         let traffic = Traffic.new();
 
         while (~exitGame) {
+            // Update HUD 
+            do Output.moveCursor(0, 7);
+            do Output.printInt(level);
+            do Output.moveCursor(1, 7);
+            do Output.printInt(score);
+
             let key = Keyboard.keyPressed();
             
             if (key = 131) { do player.moveUp(); }
@@ -141,21 +160,50 @@ class Game {
             if (key = 133) { do player.moveDown(); }
             if (key = 140) { let exitGame = true; } // ESC key to exit
 
+            if (player.getX() > 448) { // Past 14 * 32, the 12th lane
+                let score = score + 100;
+                let level = level + 1;
+                
+                do traffic.increaseDifficulty();
+
+                do player.dispose();
+                let player = Player.new(); 
+                
+                // In future add flash screen
+                do Sys.wait(500);
+            }
+
             if (~(key = 0)) { do Sys.wait(150); }
             
             do traffic.moveTraffic();
             if (traffic.checkCollisions(player)) {
-                do Output.moveCursor(10, 20);
-                do Output.printString("GAME OVER");
-                do Sys.wait(2000);
                 let exitGame = true;
+                let state = 5;
             }
             do Sys.wait(20);
-
         }
 
         do player.dispose();
         do traffic.dispose();
+        return;
+    }
+
+    method void runGameOver() {
+        do Screen.clearScreen();
+        do Output.moveCursor(10, 25);
+        do Output.printString("GAME OVER");
+        do Output.moveCursor(12, 22);
+        do Output.printString("Final Score: ");
+        do Output.printInt(score);
+        
+        do Output.moveCursor(15, 18);
+        do Output.printString("Press ENTER to return to main screen");
+
+        // Wait for Enter (Key 128)
+        while (~(Keyboard.keyPressed() = 128)) {}
+        // Wait for release
+        while (Keyboard.keyPressed() = 128) {}
+
         let state = 0;
         return;
     }

@@ -85,4 +85,10 @@ class Car {
     method int getY() { return y; }
     method int getWidth() { return width; }
     method int getHeight() { return height; }
+
+    // Increase on speed every level
+    method void increaseSpeed(int amount) {
+        let speed = speed + amount;
+        return;
+    }
 }
