@@ -19,6 +19,16 @@ class Leaderboard {
     }
 
     method void dispose() {
+        var int i;
+        var String s;
+        let i = 0;
+        while (i < capacity) {
+            let s = names[i];
+            if (~(s = 0)) {
+                do s.dispose();
+            }
+            let i = i + 1;
+        }
         do scores.dispose();
         do names.dispose();
         do Memory.deAlloc(this);
@@ -37,6 +47,7 @@ class Leaderboard {
     method void addScore(int newScore, String newName) {
         var int i, j;
         var boolean inserted;
+        var String loserName;
         
         let i = 0;
         let inserted = false;
@@ -44,7 +55,12 @@ class Leaderboard {
         // Find the spot to insert
         while ((i < capacity) & (~inserted)) {
             if (newScore > scores[i]) {
-                let j = capacity - 1; 
+                let loserName = names[capacity - 1];
+                if (~(loserName = 0)) {
+                    do loserName.dispose(); 
+                }
+                
+                let j = capacity - 1;
                 while (j > i) {
                     let scores[j] = scores[j - 1];
                     let names[j] = names[j - 1];
