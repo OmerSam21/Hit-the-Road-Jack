@@ -1,21 +1,24 @@
 class Traffic {
     field Array cars;
     field int carCount;
+    field int activeCarCount;
+    field int seed;
 
-    constructor Traffic new() {
+    constructor Traffic new(int gameSeed) {
         var int i;
         var int startX, startY;
         var int speed, direction;
         var Car newCar;
         
+        let seed = gameSeed;
+        let activeCarCount = 0;
         let carCount = 12;
         let cars = Array.new(carCount);
 
         let i = 0;
         while (i < carCount) {
             let startX = ((i + 2) * 32) + 4;
-            // Later update to use seed for randomness
-            if ((i - (2 * (i / 2))) = 0) {
+            if (rand(2) = 0) {
                 let direction = 1; 
                 let startY = 0;
             }
@@ -23,12 +26,13 @@ class Traffic {
                 let direction = -1;
                 let startY = 200;
             }
-            let speed = (i - (3 * (i / 3))) + 2; 
+            let speed = rand(4) + 2; 
             let cars[i] = Car.new(startX, startY, 20, 30, speed, direction);
 
             let i = i + 1;
         }
-        
+
+        do addCars(4);
         return this;
     }
 
@@ -43,6 +47,62 @@ class Traffic {
         }
         do cars.dispose();
         do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Returns a pseudo random number from 0 to (limit-1) */ 
+    method int rand(int limit) {
+        var int val;
+        
+        // Scramble the seed
+        let seed = (seed * 237) + 20251;
+
+        if (seed < 0) { let seed = -seed; }
+        if (seed < 0) { let seed = 0; } // Safety for -32768
+        
+        let val = seed / 32; 
+        return val - (limit * (val / limit));
+    }
+
+    /** Activates 'count' number of random inactive cars */
+    method void addCars(int count) {
+        var int i, attempts, idx;
+        var Car c;
+        var boolean done;
+
+        let i = 0;
+        while (i < count) {
+            let done = false;
+            let attempts = 0;
+            
+            // Try to find an inactive car
+            while ((~done) & (attempts < 20)) {
+                let idx = rand(carCount);
+                let c = cars[idx];
+                
+                if (~c.isActive()) {
+                    do c.activate();
+                    let activeCarCount = activeCarCount + 1;
+                    let done = true;
+                }
+                let attempts = attempts + 1;
+            }
+            
+            // Fallback: If random failed, find the first inactive one linearly
+            if (~done) {
+                let idx = 0;
+                while ((idx < carCount) & (~done)) {
+                    let c = cars[idx];
+                    if (~c.isActive()) {
+                        do c.activate();
+                        let activeCarCount = activeCarCount + 1;
+                        let done = true;
+                    }
+                    let idx = idx + 1;
+                }
+            }
+            let i = i + 1;
+        }
         return;
     }
 
@@ -87,10 +147,16 @@ class Traffic {
         var int i;
         var Car c;
         let i = 0;
+
+        if (~(activeCarCount=carCount)) {
+            do addCars(2);
+        }
         
         while (i < carCount) {
             let c = cars[i];
-            do c.increaseSpeed(1);
+            if (c.isActive() & ~(rand(3)=0)) { // 66% chance to increase speed of each car
+                do c.increaseSpeed(1);
+            }
             let i = i + 1;
         }
         return;

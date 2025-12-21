@@ -1,10 +1,11 @@
 class Car {
     field int x; // The horizontal lane position
     field int y; // The vertical position (changes)
-    field int width; // How wide the car is2
+    field int width; // How wide the car is
     field int height; // How long the car is
     field int speed; // How fast it moves
     field int direction; // 1 = Down, -1 = Up
+    field boolean active; // If car is active onscreen
 
     constructor Car new(int laneX, int startY, int w, int h, int s, int dir) {
         let x = laneX;
@@ -13,6 +14,7 @@ class Car {
         let height = h;
         let speed = s;
         let direction = dir;
+        let active = false;
         return this;
     }
 
@@ -21,33 +23,54 @@ class Car {
         return;
     }
 
+    // Getters
+    method int getX() { return x; }
+    method int getY() { return y; }
+    method int getWidth() { return width; }
+    method int getHeight() { return height; }
+    method boolean isActive() { return active; }
+
+    /** Turn the car active */
+    method void activate() {
+        let active = true;
+        do draw();
+        return;
+    }
+
+    /** Draws the car based on coords */
     method void draw() {
-        do Sprites.drawCar(x, y, true);
+        if (active) { 
+            do Sprites.drawCar(x, y, true); 
+        }
         return;
     }
 
     /** Erases the car before moving */
     method void erase() {
-        do Sprites.drawCar(x, y, false);
+        if (active) {
+            do Sprites.drawCar(x, y, false);
+        }
         return;
     }
 
     /** Updates the car's position */
     method void move() {
-        do erase();
+        if (active) {
+            do erase();
 
-        // Update Y based on speed and direction
-        let y = y + (speed * direction);
+            // Update Y based on speed and direction
+            let y = y + (speed * direction);
 
-        // Wrap around if out of bounds
-        if ((direction = 1) & (y > 256)) {
-            let y = -32;
+            // Wrap around if out of bounds
+            if ((direction = 1) & (y > 256)) {
+                let y = -32;
+            }
+            if ((direction = -1) & (y < -32)) {
+                let y = 256;
+            }
+
+            do draw();
         }
-        if ((direction = -1) & (y < -32)) {
-            let y = 256;
-        }
-
-        do draw();
         return;
     }
 
@@ -57,6 +80,8 @@ class Car {
         var int cLeft, cRight, cTop, cBottom;
         var boolean collision;
         var int padding;
+
+        if (~active) { return false; }
 
         let padding = 8;
 
@@ -82,12 +107,6 @@ class Car {
 
         return collision;
     }
-
-    // Getters for Collision
-    method int getX() { return x; }
-    method int getY() { return y; }
-    method int getWidth() { return width; }
-    method int getHeight() { return height; }
 
     // Increase on speed every level
     method void increaseSpeed(int amount) {

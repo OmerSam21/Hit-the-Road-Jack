@@ -201,7 +201,7 @@ class Game {
         do Output.printString(s_score_init);
         
         let player = Player.new();
-        let traffic = Traffic.new();
+        let traffic = Traffic.new(seed);
 
         while (~exitGame) {
             // Update HUD 
