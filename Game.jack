@@ -7,12 +7,59 @@ class Game {
     field int score;
     field int level;
 
+    // String constants to prevent memory leaks
+    field String s_title;
+    field String s_menu_play;
+    field String s_menu_instr;
+    field String s_menu_cred;
+    field String s_menu_lead;
+    field String s_instr;
+    field String s_goal;
+    field String s_ctrl;
+    field String s_dodge;
+    field String s_aim;
+    field String s_cred;
+    field String s_devs;
+    field String s_proj_name;
+    field String s_back;
+    field String s_level_init;
+    field String s_score_init;
+    field String s_game_over;
+    field String s_final_score;
+    field String s_new_highscore;
+    field String s_enter_name;
+
     constructor Game new() {
         let state = 0;
         let seed = 0;
         let leaderboard = Leaderboard.new();
         let score = 0;
         let level = 1;
+
+        let s_title = "HIT THE ROAD, JACK";
+        let s_menu_play  = "1. Play Game";
+        let s_menu_instr = "2. Instructions";
+        let s_menu_cred  = "3. Credits";
+        let s_menu_lead  = "4. Leaderboard";
+        
+        let s_instr = "INSTRUCTIONS:";
+        let s_goal  = "Goal: Cross the road without getting squashed.";
+        let s_ctrl  = "Controls: Use arrows / space to move up, down and forward.";
+        let s_dodge = "Dodge the cars and reach the next Safe Zone.";
+        let s_aim = "Aim for the highest score to place on the leaderboards.";
+        
+        let s_cred = "CREDITS:";
+        let s_devs  = "Created by Omer Samson, Alon Levy and Ofek Marciano";
+        let s_proj_name  = "Nand2Tetris Project 9";
+        let s_back  = "Press any key to go back...";
+
+        let s_level_init = "Level: 1";
+        let s_score_init = "Score: 0";
+        let s_game_over = "GAME OVER";
+        let s_final_score = "Final Score: ";
+        let s_new_highscore = "NEW HIGH SCORE!";
+        let s_enter_name = "Enter Name for leaderboard: ";
+
         return this;
     }
 
@@ -39,15 +86,15 @@ class Game {
         
         do Screen.clearScreen();
         do Output.moveCursor(10, 20);
-        do Output.printString("HIT THE ROAD, JACK");
+        do Output.printString(s_title);
         do Output.moveCursor(12, 20); 
-        do Output.printString("1. Play Game");
+        do Output.printString(s_menu_play);
         do Output.moveCursor(13, 20);
-        do Output.printString("2. Instructions");
+        do Output.printString(s_menu_instr);
         do Output.moveCursor(14, 20);
-        do Output.printString("3. Credits");
+        do Output.printString(s_menu_cred);
         do Output.moveCursor(15, 20);
-        do Output.printString("4. Leaderboard");
+        do Output.printString(s_menu_lead);
         
         let selected = false;
         while (~selected) {
@@ -69,17 +116,17 @@ class Game {
     method void runInstructions() {
         do Screen.clearScreen();
         do Output.moveCursor(4, 3);
-        do Output.printString("INSTRUCTIONS:");
+        do Output.printString(s_instr);
         do Output.moveCursor(6, 4);
-        do Output.printString("Goal: Cross the road without getting squashed.");
+        do Output.printString(s_goal);
         do Output.moveCursor(7, 4);
-        do Output.printString("Controls: Use Arrow keys to move.");
+        do Output.printString(s_ctrl);
         do Output.moveCursor(9, 4);
-        do Output.printString("Dodge the cars and reach the next Safe Zone.");
+        do Output.printString(s_dodge);
         do Output.moveCursor(10, 4);
-        do Output.printString("Aim for the highest score to place on the leaderboards.");
+        do Output.printString(s_aim);
         do Output.moveCursor(12, 4);
-        do Output.printString("Press any key to go back...");
+        do Output.printString(s_back);
         
         do Sys.wait(500); 
         while (Keyboard.keyPressed() = 0) {}
@@ -91,13 +138,13 @@ class Game {
     method void runCredits() {
         do Screen.clearScreen();
         do Output.moveCursor(4, 3);
-        do Output.printString("CREDITS:");
+        do Output.printString(s_cred);
         do Output.moveCursor(6, 4);
-        do Output.printString("Created by Omer Samson, Alon Levy and Ofek Marciano");
+        do Output.printString(s_devs);
         do Output.moveCursor(7, 4);
-        do Output.printString("For Nand2Tetris Project 9");
+        do Output.printString(s_proj_name);
         do Output.moveCursor(9, 4);
-        do Output.printString("Press any key to go back...");
+        do Output.printString(s_back);
         
         do Sys.wait(500);
         while (Keyboard.keyPressed() = 0) {}
@@ -111,7 +158,7 @@ class Game {
         do leaderboard.show(20, 5);
         
         do Output.moveCursor(20, 20);
-        do Output.printString("Press any key to back...");
+        do Output.printString(s_back);
         
         do Sys.wait(500);
         while (Keyboard.keyPressed() = 0) {}
@@ -132,9 +179,9 @@ class Game {
 
         // Draw HUD 
         do Output.moveCursor(0, 0);
-        do Output.printString("Level: 1");
+        do Output.printString(s_level_init);
         do Output.moveCursor(1, 0);
-        do Output.printString("Score: 0");
+        do Output.printString(s_score_init);
         
         let player = Player.new();
         let traffic = Traffic.new();
@@ -180,7 +227,7 @@ class Game {
             do traffic.moveTraffic();
             if (traffic.checkCollisions(player)) {
                 do Output.moveCursor(10, 20);
-                do Output.printString("GAME OVER");
+                do Output.printString(s_game_over);
                 do Sys.wait(2000);
                 let exitGame = true;
                 let state = 5;
@@ -193,26 +240,27 @@ class Game {
         return;
     }
 
+    /** 5: Game Over logic */
     method void runGameOver() {
         var String name;
 
         do Screen.clearScreen();
         do Output.moveCursor(10, 25);
-        do Output.printString("GAME OVER");
+        do Output.printString(s_game_over);
         do Output.moveCursor(12, 22);
-        do Output.printString("Final Score: ");
+        do Output.printString(s_final_score);
         do Output.printInt(score);
         
         if (leaderboard.isHighScore(score)) {
             do Output.moveCursor(14, 15);
-            do Output.printString("NEW HIGH SCORE!");
+            do Output.printString(s_new_highscore);
             do Output.moveCursor(16, 15);
-            let name = Keyboard.readLine("Enter Name for leaderboard: ");
+            let name = Keyboard.readLine(s_enter_name);
             
             do leaderboard.addScore(score, name);
         } else {
             do Output.moveCursor(15, 18);
-            do Output.printString("Press ENTER to try again");
+            do Output.printString(s_back);
             while (~(Keyboard.keyPressed() = 128)) {}
             while (Keyboard.keyPressed() = 128) {}
         }

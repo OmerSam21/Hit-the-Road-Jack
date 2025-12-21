@@ -2,6 +2,9 @@ class Leaderboard {
     field Array scores;
     field Array names;
     field int capacity;
+    field String s_highscore;
+    field String s_dot_interval;
+    field String s_dash_interval;
 
     constructor Leaderboard new() {
         var int i;
@@ -15,6 +18,9 @@ class Leaderboard {
         let names[3] = "AAA"; let scores[3] = 0;
         let names[4] = "AAA"; let scores[4] = 0;
 
+        let s_highscore = "HIGH SCORES";
+        let s_dot_interval = ". ";
+        let s_dash_interval = " - ";
         return this;
     }
 
@@ -73,6 +79,9 @@ class Leaderboard {
             }
             let i = i + 1;
         }
+        if (~inserted) {
+            do newName.dispose();
+        }
         return;
     }
 
@@ -80,7 +89,7 @@ class Leaderboard {
     method void show(int x, int y) {
         var int i;
         do Output.moveCursor(y, x);
-        do Output.printString("HIGH SCORES");
+        do Output.printString(s_highscore);
         do Output.println();
         do Output.println();
 
@@ -89,10 +98,10 @@ class Leaderboard {
             do Output.moveCursor(y + 2 + i, x);
             do Output.printInt(i + 1);
             
-            do Output.printString(". ");
+            do Output.printString(s_dot_interval);
             do Output.printString(names[i]);
             
-            do Output.printString(" - ");
+            do Output.printString(s_dash_interval);
             do Output.printInt(scores[i]);
             
             let i = i + 1;
