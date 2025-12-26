@@ -2,6 +2,7 @@
 
 A road-crossing game built in Jack programming language for the Nand2Tetris course.
 The game is a mini-replica of the game "Crossy-Road"
+[Link to youtube video](https://youtu.be/eK1hWPpAPNQ)
 
 
 ## Game Overview
